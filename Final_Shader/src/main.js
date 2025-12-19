@@ -22,6 +22,46 @@ function createProgram(gl, vertexShader, fragmentShader){
         return program;
     }
 }
+  function setRectangle(gl, x, y, width, height){
+   var left = x;
+   var right = x + width;
+   var top  = y;
+   var bottom = y+height;
+
+   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    left,top,
+    left ,bottom,
+    right,bottom,
+
+    right, bottom,
+    right,top,
+    left, top
+   ]), gl.STATIC_DRAW);
+  }
+  function drawScene(gl, canvas, program, vao,
+     resolutionUniformLocation, positionBuffer, translation , width, height){
+
+
+     canvas.height= window.innerHeight;
+     canvas.width=window.innerWidth;
+     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+
+
+      gl.clearColor(0,0,0,0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+      gl.useProgram(program);
+
+      gl.bindVertexArray(vao);
+
+       gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+
+       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+       setRectangle(gl, translation[0], translation[1], width, height)
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
     function main(){
       // Get A WebGL context  
       var canvas = document.querySelector("#GL_CANVAS");
@@ -42,18 +82,10 @@ function createProgram(gl, vertexShader, fragmentShader){
 
       const positionBuffer = gl.createBuffer();
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+       var translation = [0, 0];
+       var width = 400;
+       var height =100;
 
-     const positions = new Float32Array ([
-         100, 200,
-         600, 200,
-         100, 300,
-         100, 300,
-         600, 200,
-         600, 300
-      ]);
-     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-      
      const colorBuffer = gl.createBuffer();
      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
      const colors = new Float32Array ([
@@ -78,23 +110,32 @@ function createProgram(gl, vertexShader, fragmentShader){
       gl.enableVertexAttribArray(1);
       gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
 
-     canvas.height= window.innerHeight;
-     canvas.width=window.innerWidth;
 
 
-      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    drawScene(gl, canvas, program, vao, 
+      resolutionUniformLocation, positionBuffer, translation, width, height);
 
-      gl.clearColor(0,0,0,0);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+   const  xSlider =document.querySelector("#xSlider");
+   const  xValue = document.querySelector("#xValue");
+    xSlider.max = canvas.width;
+    xSlider.addEventListener("input",()=>{
+      xValue.textContent = xSlider.value;
+      translation[0] = parseFloat(xSlider.value);
+      drawScene(gl, canvas, program, vao, 
+      resolutionUniformLocation, positionBuffer, translation, width, height);
+    })
 
-      gl.useProgram(program);
-
-      gl.bindVertexArray(vao);
-
-       gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
-
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-
+    const ySlider = document.querySelector("#ySlider");
+    const yValue = document.querySelector("#yValue");
+    ySlider.max = canvas.height;
+    ySlider.addEventListener("input", ()=>{
+      yValue.textContent = ySlider.value;
+      translation[1]= parseFloat(ySlider.value);
+      drawScene(gl, canvas, program, vao, 
+      resolutionUniformLocation, positionBuffer, translation, width, height);
+    })
+    
+      
     }
 
 main();

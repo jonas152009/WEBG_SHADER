@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html>
-    <head>
-         <title>WebGL2 Dreieck Demo</title>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="src/style.css">
-    </head>
-    <body>
-        <canvas id="GL_CANVAS"></canvas>
-        <script type="module"  src="src/main.js"></script>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="src/style.css" />
+  </head>
+  <body>
+
+    <div>
+  <label for="xSlider">X:</label>
+  <input type="range" id="xSlider" min="0" value="0">
+  <span id="xValue">0</span>
+  </div>
+    <div>
+  <label for="ySlider">Y:</label>
+  <input type="range" id="ySlider" min="0" value="0">
+  <span id="yValue">0</span>
+  </div>
+
+    <canvas id="GL_CANVAS"></canvas>
+    <script type="module" src="src/main.js"></script>
+  </body>
 </html>
