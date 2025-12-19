@@ -1,10 +1,9 @@
 #version 300 es
 precision highp float;
 
-in vec3 vColor;
-out vec4 fragColor;
-uniform float uTime;
+uniform vec4 u_color;
+out vec4 outColor;
 
 void main() {
-    fragColor=vec4(vColor,1.0);
+  outColor = u_color;
 }

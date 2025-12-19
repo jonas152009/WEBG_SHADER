@@ -1,16 +1,18 @@
 #version 300 es
-precision highp float;
 
-layout(location = 0) in vec2 aPos;
-layout(location = 1) in vec3 aColor;
+in vec2 a_position;
 
 uniform vec2 u_resolution;
-
-out vec3 vColor;
+uniform vec2 u_translation;
+uniform vec2 u_rotation;
 
 void main() {
-    vec2 clipSpace = (aPos / u_resolution) * 2.0 - 1.0;
-    clipSpace.y = -clipSpace.y; // flip Y für WebGL
-    gl_Position = vec4(clipSpace, 0.0, 1.0);
-    vColor = aColor;
+  vec2 rotatedPosition= vec2(
+    a_position.x * u_rotation.x + a_position.y * u_rotation.y,
+    a_position.y * u_rotation.x - a_position.x * u_rotation.y
+  );
+  vec2 position = rotatedPosition + u_translation;
+  vec2 clipSpace = (position/u_resolution)*2.0-1.0;
+
+  gl_Position = vec4(clipSpace*vec2(1, -1), 0, 1);
 }

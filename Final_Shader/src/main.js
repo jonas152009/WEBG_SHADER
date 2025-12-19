@@ -9,7 +9,7 @@ function createShader(gl, type, source){
     if(sucess){
        return  shader;
     }
-    console.error("Shader compile error:\n", gl.getShaderInfoLog(shader));
+    console.error(source + " compile error:\n", gl.getShaderInfoLog(shader));
   
 }
 function createProgram(gl, vertexShader, fragmentShader){
@@ -22,24 +22,46 @@ function createProgram(gl, vertexShader, fragmentShader){
         return program;
     }
 }
-  function setRectangle(gl, x, y, width, height){
-   var left = x;
-   var right = x + width;
-   var top  = y;
-   var bottom = y+height;
-
+function setGeometrie(gl){
    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    left,top,
-    left ,bottom,
-    right,bottom,
-
-    right, bottom,
-    right,top,
-    left, top
+          // left column
+          0, 0,
+          30, 0,
+          0, 150,
+          0, 150,
+          30, 0,
+          30, 150,
+ 
+          // top rung
+          30, 0,
+          100, 0,
+          30, 30,
+          30, 30,
+          100, 0,
+          100, 30,
+ 
+          // middle rung
+          30, 60,
+          70, 60,
+          30, 90,
+          30, 90,
+          70, 60,
+          70, 90
    ]), gl.STATIC_DRAW);
   }
-  function drawScene(gl, canvas, program, vao,
-     resolutionUniformLocation, positionBuffer, translation , width, height){
+function drawScene({
+  gl,
+  canvas,
+  program,
+  vao,
+  resolutionUniformLocation,
+  translation,
+  translationLocation,
+  rotationLocation,
+  rotation,
+  colorLocation,
+  color
+}){
 
 
      canvas.height= window.innerHeight;
@@ -55,14 +77,16 @@ function createProgram(gl, vertexShader, fragmentShader){
 
       gl.bindVertexArray(vao);
 
-       gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+      gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+      gl.uniform4fv(colorLocation, color);
+      gl.uniform2fv(translationLocation, translation)
+      gl.uniform2fv(rotationLocation, rotation);
 
-       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-       setRectangle(gl, translation[0], translation[1], width, height)
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      gl.drawArrays(gl.TRIANGLES, 0, 18);
   }
-    function main(){
+
+function main(){
       // Get A WebGL context  
       var canvas = document.querySelector("#GL_CANVAS");
       var gl = canvas.getContext("webgl2");
@@ -78,27 +102,15 @@ function createProgram(gl, vertexShader, fragmentShader){
       var program = createProgram(gl, vertexShader, fragmentShader);
 
     var resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
-
+    var colorLocation = gl.getUniformLocation(program, "u_color");
+    var rotationLocation = gl.getUniformLocation(program, "u_rotation");
 
       const positionBuffer = gl.createBuffer();
 
        var translation = [0, 0];
-       var width = 400;
-       var height =100;
-
-     const colorBuffer = gl.createBuffer();
-     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-     const colors = new Float32Array ([
-        1,0,0,
-        0,1,0,
-        0,0,1,
-        0,0,1,
-        0,1,0,
-        1,0,0
-      ]);
-      gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
-
-      var vao = gl.createVertexArray();
+       var color = [Math.random(), Math.random(), Math.random(), 1];
+       var rotation = [1, 0];
+      let vao = gl.createVertexArray();
       gl.bindVertexArray(vao);
 
 
@@ -106,14 +118,24 @@ function createProgram(gl, vertexShader, fragmentShader){
       gl.enableVertexAttribArray(0);
       gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-      gl.enableVertexAttribArray(1);
-      gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
+      var translationLocation = gl.getUniformLocation(program, "u_translation");
+      
+      setGeometrie(gl);
+      const renderState = {
+  gl,
+  canvas,
+  program,
+  vao,
+  resolutionUniformLocation,
+  translation,
+  translationLocation,
+  rotationLocation,
+  rotation,
+  colorLocation,
+  color
+}
 
-
-
-    drawScene(gl, canvas, program, vao, 
-      resolutionUniformLocation, positionBuffer, translation, width, height);
+    drawScene(renderState);
 
    const  xSlider =document.querySelector("#xSlider");
    const  xValue = document.querySelector("#xValue");
@@ -121,8 +143,7 @@ function createProgram(gl, vertexShader, fragmentShader){
     xSlider.addEventListener("input",()=>{
       xValue.textContent = xSlider.value;
       translation[0] = parseFloat(xSlider.value);
-      drawScene(gl, canvas, program, vao, 
-      resolutionUniformLocation, positionBuffer, translation, width, height);
+      drawScene(renderState);
     })
 
     const ySlider = document.querySelector("#ySlider");
@@ -131,8 +152,17 @@ function createProgram(gl, vertexShader, fragmentShader){
     ySlider.addEventListener("input", ()=>{
       yValue.textContent = ySlider.value;
       translation[1]= parseFloat(ySlider.value);
-      drawScene(gl, canvas, program, vao, 
-      resolutionUniformLocation, positionBuffer, translation, width, height);
+      drawScene(renderState);
+    })
+        const rotateSlider = document.querySelector("#rotateSlider");
+        const rotateValue = document.querySelector("#rotateValue");
+        rotateSlider.addEventListener("input", ()=>{
+         const angleDeg = parseFloat(rotateSlider.value);
+       rotateValue.textContent = angleDeg;
+       const angleRad = angleDeg * Math.PI / 180;
+      rotation[0] = Math.cos(angleRad);
+      rotation[1] = Math.sin(angleRad);
+         drawScene(renderState);
     })
     
       
