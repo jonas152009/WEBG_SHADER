@@ -1,18 +1,14 @@
 #version 300 es
 
-in vec2 a_position;
+in vec4 a_position;
+in vec4 a_color;
 
-uniform vec2 u_resolution;
-uniform vec2 u_translation;
-uniform vec2 u_rotation;
+out vec4 v_color;
+uniform mat4 u_matrix;
+uniform float u_fudgeFactor;
 
 void main() {
-  vec2 rotatedPosition= vec2(
-    a_position.x * u_rotation.x + a_position.y * u_rotation.y,
-    a_position.y * u_rotation.x - a_position.x * u_rotation.y
-  );
-  vec2 position = rotatedPosition + u_translation;
-  vec2 clipSpace = (position/u_resolution)*2.0-1.0;
-
-  gl_Position = vec4(clipSpace*vec2(1, -1), 0, 1);
+ vec4 position = u_matrix * a_position;
+ gl_Position = u_matrix*a_position;
+ v_color=a_color;
 }
