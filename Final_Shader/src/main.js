@@ -9,7 +9,7 @@ function createShader(gl, type, source){
     if(sucess){
        return  shader;
     }
-    console.error(source + " compile error:\n", gl.getShaderInfoLog(shader));
+    console.error("Shader compile error:\n", gl.getShaderInfoLog(shader));
   
 }
 function createProgram(gl, vertexShader, fragmentShader){
@@ -22,150 +22,180 @@ function createProgram(gl, vertexShader, fragmentShader){
         return program;
     }
 }
-const m4 = {
-translation: function(tx, ty, tz) {
-    return [
-       1,  0,  0,  0,
-       0,  1,  0,  0,
-       0,  0,  1,  0,
-       tx, ty, tz, 1,
-    ];
-  },
- 
-  xRotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
- 
-    return [
-      1, 0, 0, 0,
-      0, c, s, 0,
-      0, -s, c, 0,
-      0, 0, 0, 1,
-    ];
-  },
- 
-  yRotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
- 
-    return [
-      c, 0, -s, 0,
-      0, 1, 0, 0,
-      s, 0, c, 0,
-      0, 0, 0, 1,
-    ];
-  },
- 
-  zRotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
- 
-    return [
-       c, s, 0, 0,
-      -s, c, 0, 0,
-       0, 0, 1, 0,
-       0, 0, 0, 1,
-    ];
-  },
- 
-  scaling: function(sx, sy, sz) {
-    return [
-      sx, 0,  0,  0,
-      0, sy,  0,  0,
-      0,  0, sz,  0,
-      0,  0,  0,  1,
-    ];
-  },
-  
-   orthographic: function(left, right, bottom, top, near, far) {
-    return [
-      2 / (right - left), 0, 0, 0,
-      0, 2 / (top - bottom), 0, 0,
-      0, 0, 2 / (near - far), 0,
- 
-      (left + right) / (left - right),
-      (bottom + top) / (bottom - top),
-      (near + far) / (near - far),
-      1,
-    ];
-  },
-   multiply: function(a, b) {
-    var a00 = a[0 * 4 + 0];
-    var a01 = a[0 * 4 + 1];
-    var a02 = a[0 * 4 + 2];
-    var a03 = a[0 * 4 + 3];
-    var a10 = a[1 * 4 + 0];
-    var a11 = a[1 * 4 + 1];
-    var a12 = a[1 * 4 + 2];
-    var a13 = a[1 * 4 + 3];
-    var a20 = a[2 * 4 + 0];
-    var a21 = a[2 * 4 + 1];
-    var a22 = a[2 * 4 + 2];
-    var a23 = a[2 * 4 + 3];
-    var a30 = a[3 * 4 + 0];
-    var a31 = a[3 * 4 + 1];
-    var a32 = a[3 * 4 + 2];
-    var a33 = a[3 * 4 + 3];
-    var b00 = b[0 * 4 + 0];
-    var b01 = b[0 * 4 + 1];
-    var b02 = b[0 * 4 + 2];
-    var b03 = b[0 * 4 + 3];
-    var b10 = b[1 * 4 + 0];
-    var b11 = b[1 * 4 + 1];
-    var b12 = b[1 * 4 + 2];
-    var b13 = b[1 * 4 + 3];
-    var b20 = b[2 * 4 + 0];
-    var b21 = b[2 * 4 + 1];
-    var b22 = b[2 * 4 + 2];
-    var b23 = b[2 * 4 + 3];
-    var b30 = b[3 * 4 + 0];
-    var b31 = b[3 * 4 + 1];
-    var b32 = b[3 * 4 + 2];
-    var b33 = b[3 * 4 + 3];
-    return [
-      b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
-      b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
-      b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32,
-      b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33,
-      b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30,
-      b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31,
-      b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32,
-      b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33,
-      b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30,
-      b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31,
-      b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32,
-      b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33,
-      b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30,
-      b30 * a01 + b31 * a11 + b32 * a21 + b33 * a31,
-      b30 * a02 + b31 * a12 + b32 * a22 + b33 * a32,
-      b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33,
-    ];
-  },
+function main() {
+      var canvas = document.querySelector("#GL_CANVAS");
+      var gl = canvas.getContext("webgl2");
+      if(!gl){
+        console.error("Context error");
+        return;
+      }
+      gl.canvas.height = window.innerHeight;
+      gl.canvas.width = window.innerWidth;
+      var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+      var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+      
+      
+      var program = createProgram(gl, vertexShader, fragmentShader);
 
-translate: function(m, tx, ty, tz) {
-    return m4.multiply(m, m4.translation(tx, ty, tz));
-  },
+    // look up where the vertex data needs to go.
+  var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+  var colorAttributeLocation = gl.getAttribLocation(program, "a_color");
+
+  // look up uniform locations
+  var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+
+  // Create a buffer
+  var positionBuffer = gl.createBuffer();
+
+  // Create a vertex array object (attribute state)
+  var vao = gl.createVertexArray();
+
+  // and make it the one we're currently working with
+  gl.bindVertexArray(vao);
+
+  // Turn on the attribute
+  gl.enableVertexAttribArray(positionAttributeLocation);
+
+  // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  // Set Geometry.
+  setGeometry(gl);
+
+  
+  var size = 3;          
+  var type = gl.FLOAT;   
+  var normalize = false; 
+  var stride = 0;       
+  var offset = 0;        
+  gl.vertexAttribPointer(
+      positionAttributeLocation, size, type, normalize, stride, offset);
+
+  // create the color buffer, make it the current ARRAY_BUFFER
+  // and copy in the color values
+  var colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  setColors(gl);
+
+  // Turn on the attribute
+  gl.enableVertexAttribArray(colorAttributeLocation);
+
+  
+  var size = 3;         
+  var type = gl.UNSIGNED_BYTE; 
+  var normalize = true;  
+  var stride = 0;       
+  var offset = 0;        
+  gl.vertexAttribPointer(
+      colorAttributeLocation, size, type, normalize, stride, offset);
+
+
+  function radToDeg(r) {
+    return r * 180 / Math.PI;
+  }
+
+  function degToRad(d) {
+    return d * Math.PI / 180;
+  }
+
+  var translation = [-150, 0, -360];
+  var rotation = [degToRad(190), degToRad(40), degToRad(30)];
+  var scale = [1, 1, 1];
+  var fieldOfViewRadians = degToRad(60);
+
  
-  xRotate: function(m, angleInRadians) {
-    return m4.multiply(m, m4.xRotation(angleInRadians));
-  },
+  drawScene();
+
+
+    function drawScene() {
+    var numFs = 5;
+    var radius = 200;
+
+    
+    // Tell WebGL how to convert from clip space to pixels
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+    // Clear the canvas
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // turn on depth testing
+    gl.enable(gl.DEPTH_TEST);
+
+    // tell webgl to cull faces
+    gl.enable(gl.CULL_FACE);
+
+    // Tell it to use our program (pair of shaders)
+    gl.useProgram(program);
+
+    // Bind the attribute/buffer set we want.
+    gl.bindVertexArray(vao);
+
+    // Compute the matrix
+    var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+    var zNear = 1;
+    var zFar = 2000;
+    var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
+
+    // Compute the position of the first F
+  var fPosition = [radius, 0, 0];
  
-  yRotate: function(m, angleInRadians) {
-    return m4.multiply(m, m4.yRotation(angleInRadians));
-  },
+  // Use matrix math to compute a position on the circle.
+  var cameraMatrix = m4.yRotation(2);
+  cameraMatrix = m4.translate(cameraMatrix, 0, 50, radius * 1.5);
  
-  zRotate: function(m, angleInRadians) {
-    return m4.multiply(m, m4.zRotation(angleInRadians));
-  },
+  // Get the camera's position from the matrix we computed
+  var cameraPosition = [
+    cameraMatrix[12],
+    cameraMatrix[13],
+    cameraMatrix[14],
+  ];
  
-  scale: function(m, sx, sy, sz) {
-    return m4.multiply(m, m4.scaling(sx, sy, sz));
-  },
+  var up = [0, 1, 0];
+ 
+  // Compute the camera's matrix using look at.
+  var cameraMatrix = m4.lookAt(cameraPosition, fPosition, up);
+ 
+  // Make a view matrix from the camera matrix.
+  var viewMatrix = m4.inverse(cameraMatrix);
+
+
+    var cameraMatrix = m4.yRotation(2);
+    cameraMatrix = m4.translate(cameraMatrix, 0, 0, radius * 1.5);
+
+    // Make a view matrix from the camera matrix.
+    var viewMatrix = m4.inverse(cameraMatrix);
+
+    // create a viewProjection matrix. This will both apply perspective
+    // AND move the world so that the camera is effectively the origin
+    var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
+    // Draw 'F's in a circle
+    for (var ii = 0; ii < numFs; ++ii) {
+      var angle = ii * Math.PI * 2 / numFs;
+
+      var x = Math.cos(angle) * radius;
+      var z = Math.sin(angle) * radius;
+      var matrix = m4.translate(viewProjectionMatrix, x, 0, z);
+
+      // Set the matrix.
+      gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+      // Draw the geometry.
+      var primitiveType = gl.TRIANGLES;
+      var offset = 0;
+      var count = 16 * 6;
+      gl.drawArrays(primitiveType, offset, count);
+    }
+  }
 }
-function setGeometrie(gl){
-   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
- // left column
-       // left column front
+
+// Fill the current ARRAY_BUFFER buffer
+// with the values that define a letter 'F'.
+function setGeometry(gl) {
+  gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+          // left column front
           0,   0,  0,
           0, 150,  0,
           30,   0,  0,
@@ -292,8 +322,11 @@ function setGeometrie(gl){
           0,   0,   0,
           0, 150,  30,
           0, 150,   0,
-   ]), gl.STATIC_DRAW);
-  }
+      ]),
+      gl.STATIC_DRAW);
+}
+
+// Fill the current ARRAY_BUFFER buffer with colors for the 'F'.
 function setColors(gl) {
   gl.bufferData(
       gl.ARRAY_BUFFER,
@@ -428,187 +461,295 @@ function setColors(gl) {
       ]),
       gl.STATIC_DRAW);
 }
-function drawScene({
-  gl,
-  canvas,
-  program,
-  vao,
-  translation,
-  scale,
-  rotation,
-  matrixLocation
-}){
-
-
-     canvas.height= window.innerHeight;
-     canvas.width=window.innerWidth;
-     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
 
 
-      gl.clearColor(0,0,0,0);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+var m4 = {
 
-       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.enable(gl.DEPTH_TEST);
+  perspective: function(fieldOfViewInRadians, aspect, near, far) {
+    var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+    var rangeInv = 1.0 / (near - far);
 
-       gl.enable(gl.CULL_FACE);
+    return [
+      f / aspect, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (near + far) * rangeInv, -1,
+      0, 0, near * far * rangeInv * 2, 0,
+    ];
+  },
 
-      gl.useProgram(program);
+  projection: function(width, height, depth) {
+    // Note: This matrix flips the Y axis so 0 is at the top.
+    return [
+       2 / width, 0, 0, 0,
+       0, -2 / height, 0, 0,
+       0, 0, 2 / depth, 0,
+      -1, 1, 0, 1,
+    ];
+  },
 
-      gl.bindVertexArray(vao);
-     
-       var matrix = m4.orthographic(0,gl.canvas.clientWidth, gl.canvas.clientHeight,0,200,-200);
-       matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
-       matrix = m4.xRotate(matrix, rotation[0]);
-        matrix = m4.yRotate(matrix, rotation[1]);
-        matrix = m4.zRotate(matrix, rotation[2]);
-        matrix = m4.scale(matrix, scale[0], scale[1], scale[2]);
-  console.log(matrix);
-      gl.uniformMatrix4fv(matrixLocation, false, matrix);
-    
-      gl.drawArrays(gl.TRIANGLES, 0, 96);
-    
-  }
+  multiply: function(a, b) {
+    var a00 = a[0 * 4 + 0];
+    var a01 = a[0 * 4 + 1];
+    var a02 = a[0 * 4 + 2];
+    var a03 = a[0 * 4 + 3];
+    var a10 = a[1 * 4 + 0];
+    var a11 = a[1 * 4 + 1];
+    var a12 = a[1 * 4 + 2];
+    var a13 = a[1 * 4 + 3];
+    var a20 = a[2 * 4 + 0];
+    var a21 = a[2 * 4 + 1];
+    var a22 = a[2 * 4 + 2];
+    var a23 = a[2 * 4 + 3];
+    var a30 = a[3 * 4 + 0];
+    var a31 = a[3 * 4 + 1];
+    var a32 = a[3 * 4 + 2];
+    var a33 = a[3 * 4 + 3];
+    var b00 = b[0 * 4 + 0];
+    var b01 = b[0 * 4 + 1];
+    var b02 = b[0 * 4 + 2];
+    var b03 = b[0 * 4 + 3];
+    var b10 = b[1 * 4 + 0];
+    var b11 = b[1 * 4 + 1];
+    var b12 = b[1 * 4 + 2];
+    var b13 = b[1 * 4 + 3];
+    var b20 = b[2 * 4 + 0];
+    var b21 = b[2 * 4 + 1];
+    var b22 = b[2 * 4 + 2];
+    var b23 = b[2 * 4 + 3];
+    var b30 = b[3 * 4 + 0];
+    var b31 = b[3 * 4 + 1];
+    var b32 = b[3 * 4 + 2];
+    var b33 = b[3 * 4 + 3];
+    return [
+      b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
+      b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
+      b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32,
+      b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33,
+      b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30,
+      b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31,
+      b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32,
+      b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33,
+      b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30,
+      b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31,
+      b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32,
+      b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33,
+      b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30,
+      b30 * a01 + b31 * a11 + b32 * a21 + b33 * a31,
+      b30 * a02 + b31 * a12 + b32 * a22 + b33 * a32,
+      b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33,
+    ];
+  },
 
-function main(){
-      // Get A WebGL context  
-      var canvas = document.querySelector("#GL_CANVAS");
-      var gl = canvas.getContext("webgl2");
-      if(!gl){
-        console.error("Context error");
-        return;
-      }
+  translation: function(tx, ty, tz) {
+    return [
+       1,  0,  0,  0,
+       0,  1,  0,  0,
+       0,  0,  1,  0,
+       tx, ty, tz, 1,
+    ];
+  },
 
-      var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-      var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-      
-      
-      var program = createProgram(gl, vertexShader, fragmentShader);
+  xRotation: function(angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
 
-    
-    let matrixLocation = gl.getUniformLocation(program, "u_matrix");
+    return [
+      1, 0, 0, 0,
+      0, c, s, 0,
+      0, -s, c, 0,
+      0, 0, 0, 1,
+    ];
+  },
 
-    
-      const positionBuffer = gl.createBuffer();
+  yRotation: function(angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
 
-       let translation = [60, 40, 0];
-       let color = [Math.random(), Math.random(), Math.random(), 1];
-       let scale = [0.85,0.85,0.85];
-       let rotation = [0,0,0];
+    return [
+      c, 0, -s, 0,
+      0, 1, 0, 0,
+      s, 0, c, 0,
+      0, 0, 0, 1,
+    ];
+  },
 
+  zRotation: function(angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
 
-      let vao = gl.createVertexArray();
-      gl.bindVertexArray(vao);
+    return [
+       c, s, 0, 0,
+      -s, c, 0, 0,
+       0, 0, 1, 0,
+       0, 0, 0, 1,
+    ];
+  },
 
-      
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-      setGeometrie(gl);
-      let positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-      gl.enableVertexAttribArray(positionAttributeLocation);
-      gl.vertexAttribPointer(positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+  scaling: function(sx, sy, sz) {
+    return [
+      sx, 0,  0,  0,
+      0, sy,  0,  0,
+      0,  0, sz,  0,
+      0,  0,  0,  1,
+    ];
+  },
 
-      let colorBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-      setColors(gl);
-      let colorAttributeLocation = gl.getAttribLocation(program, "a_color")
-      gl.enableVertexAttribArray(colorAttributeLocation);
-      gl.vertexAttribPointer(colorAttributeLocation, 3, gl.UNSIGNED_BYTE, true, 0,0);
+  translate: function(m, tx, ty, tz) {
+    return m4.multiply(m, m4.translation(tx, ty, tz));
+  },
 
-     
+  xRotate: function(m, angleInRadians) {
+    return m4.multiply(m, m4.xRotation(angleInRadians));
+  },
 
-const renderState = {
-  gl,
-  canvas,
-  program,
-  vao,
-  translation,
-  scale,
-  rotation,
-  matrixLocation
-}
-/*UI*/{
-    drawScene(renderState);
-//translate
-   const  xSlider =document.querySelector("#xSlider");
-   const  xValue = document.querySelector("#xValue");
-    xSlider.max = canvas.width;
-    xSlider.addEventListener("input",()=>{
-      xValue.textContent = xSlider.value;
-      translation[0] = parseFloat(xSlider.value);
-      drawScene(renderState);
-    });
+  yRotate: function(m, angleInRadians) {
+    return m4.multiply(m, m4.yRotation(angleInRadians));
+  },
 
-    const ySlider = document.querySelector("#ySlider");
-    const yValue = document.querySelector("#yValue");
-    ySlider.max = canvas.height;
-    ySlider.addEventListener("input", ()=>{
-      yValue.textContent = ySlider.value;
-      translation[1]= parseFloat(ySlider.value);
-      drawScene(renderState);
-    });
-        const ZSlider = document.querySelector("#ZSlider");
-    const ZValue = document.querySelector("#ZValue");
-    ZSlider.max = canvas.height;
-    ZSlider.addEventListener("input", ()=>{
-      ZValue.textContent = ZSlider.value;
-      translation[2]= parseFloat(ZSlider.value);
-      drawScene(renderState);
-    });
+  zRotate: function(m, angleInRadians) {
+    return m4.multiply(m, m4.zRotation(angleInRadians));
+  },
 
+  scale: function(m, sx, sy, sz) {
+    return m4.multiply(m, m4.scaling(sx, sy, sz));
+  },
 
-    //rotate
-     const rotateSliderX = document.querySelector("#rotateSliderX");
-     const rotateValueX = document.querySelector("#rotateValueX");
-     rotateSliderX.addEventListener("input", ()=>{
-        const angleDeg = parseFloat(rotateSliderX.value);
-        rotateValueX.textContent = angleDeg;
-        rotation[0] = angleDeg * Math.PI / 180;
-        drawScene(renderState);
-    });
-      const rotateSliderY = document.querySelector("#rotateSliderY");
-     const rotateValueY = document.querySelector("#rotateValueY");
-     rotateSliderY.addEventListener("input", ()=>{
-        const angleDeg = parseFloat(rotateSliderY.value);
-        rotateValueY.textContent = angleDeg;
-        rotation[1] = angleDeg * Math.PI / 180;
-        drawScene(renderState);
-    });
-      const rotateSliderZ = document.querySelector("#rotateSliderZ");
-     const rotateValueZ = document.querySelector("#rotateValueZ");
-     rotateSliderZ.addEventListener("input", ()=>{
-        const angleDeg = parseFloat(rotateSliderZ.value);
-        rotateValueZ.textContent = angleDeg;
-        rotation[2] = angleDeg * Math.PI / 180;
-        drawScene(renderState);
-    });
+  inverse: function(m) {
+    var m00 = m[0 * 4 + 0];
+    var m01 = m[0 * 4 + 1];
+    var m02 = m[0 * 4 + 2];
+    var m03 = m[0 * 4 + 3];
+    var m10 = m[1 * 4 + 0];
+    var m11 = m[1 * 4 + 1];
+    var m12 = m[1 * 4 + 2];
+    var m13 = m[1 * 4 + 3];
+    var m20 = m[2 * 4 + 0];
+    var m21 = m[2 * 4 + 1];
+    var m22 = m[2 * 4 + 2];
+    var m23 = m[2 * 4 + 3];
+    var m30 = m[3 * 4 + 0];
+    var m31 = m[3 * 4 + 1];
+    var m32 = m[3 * 4 + 2];
+    var m33 = m[3 * 4 + 3];
+    var tmp_0  = m22 * m33;
+    var tmp_1  = m32 * m23;
+    var tmp_2  = m12 * m33;
+    var tmp_3  = m32 * m13;
+    var tmp_4  = m12 * m23;
+    var tmp_5  = m22 * m13;
+    var tmp_6  = m02 * m33;
+    var tmp_7  = m32 * m03;
+    var tmp_8  = m02 * m23;
+    var tmp_9  = m22 * m03;
+    var tmp_10 = m02 * m13;
+    var tmp_11 = m12 * m03;
+    var tmp_12 = m20 * m31;
+    var tmp_13 = m30 * m21;
+    var tmp_14 = m10 * m31;
+    var tmp_15 = m30 * m11;
+    var tmp_16 = m10 * m21;
+    var tmp_17 = m20 * m11;
+    var tmp_18 = m00 * m31;
+    var tmp_19 = m30 * m01;
+    var tmp_20 = m00 * m21;
+    var tmp_21 = m20 * m01;
+    var tmp_22 = m00 * m11;
+    var tmp_23 = m10 * m01;
 
+    var t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
+             (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
+    var t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
+             (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
+    var t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) -
+             (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
+    var t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
+             (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
 
-//Scale
-    const scaleXSlider = document.querySelector("#scaleXSlider");
-    const scaleXValue = document.querySelector("#scaleXValue");
-    scaleXSlider.addEventListener("input", ()=>{
-      scaleXValue.textContent = scaleXSlider.value;
-      scale[0]= parseFloat(scaleXSlider.value);
-      drawScene(renderState);
-    });
+    var d = 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
 
-    const scaleYSlider = document.querySelector("#scaleYSlider");
-    const scaleYValue = document.querySelector("#scaleYValue");
-    scaleYSlider.addEventListener("input", ()=>{
-      scaleYValue.textContent = scaleYSlider.value;
-      scale[1]= parseFloat(scaleYSlider.value);
-      drawScene(renderState);
-    });
-       const scaleZSlider = document.querySelector("#scaleZSlider");
-    const scaleZValue = document.querySelector("#scaleZValue");
-    scaleZSlider.addEventListener("input", ()=>{
-      scaleZValue.textContent = scaleZSlider.value;
-      scale[2]= parseFloat(scaleZSlider.value);
-      drawScene(renderState);
-    });
-  }   
-      
+    return [
+      d * t0,
+      d * t1,
+      d * t2,
+      d * t3,
+      d * ((tmp_1 * m10 + tmp_2 * m20 + tmp_5 * m30) -
+           (tmp_0 * m10 + tmp_3 * m20 + tmp_4 * m30)),
+      d * ((tmp_0 * m00 + tmp_7 * m20 + tmp_8 * m30) -
+           (tmp_1 * m00 + tmp_6 * m20 + tmp_9 * m30)),
+      d * ((tmp_3 * m00 + tmp_6 * m10 + tmp_11 * m30) -
+           (tmp_2 * m00 + tmp_7 * m10 + tmp_10 * m30)),
+      d * ((tmp_4 * m00 + tmp_9 * m10 + tmp_10 * m20) -
+           (tmp_5 * m00 + tmp_8 * m10 + tmp_11 * m20)),
+      d * ((tmp_12 * m13 + tmp_15 * m23 + tmp_16 * m33) -
+           (tmp_13 * m13 + tmp_14 * m23 + tmp_17 * m33)),
+      d * ((tmp_13 * m03 + tmp_18 * m23 + tmp_21 * m33) -
+           (tmp_12 * m03 + tmp_19 * m23 + tmp_20 * m33)),
+      d * ((tmp_14 * m03 + tmp_19 * m13 + tmp_22 * m33) -
+           (tmp_15 * m03 + tmp_18 * m13 + tmp_23 * m33)),
+      d * ((tmp_17 * m03 + tmp_20 * m13 + tmp_23 * m23) -
+           (tmp_16 * m03 + tmp_21 * m13 + tmp_22 * m23)),
+      d * ((tmp_14 * m22 + tmp_17 * m32 + tmp_13 * m12) -
+           (tmp_16 * m32 + tmp_12 * m12 + tmp_15 * m22)),
+      d * ((tmp_20 * m32 + tmp_12 * m02 + tmp_19 * m22) -
+           (tmp_18 * m22 + tmp_21 * m32 + tmp_13 * m02)),
+      d * ((tmp_18 * m12 + tmp_23 * m32 + tmp_15 * m02) -
+           (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12)),
+      d * ((tmp_22 * m22 + tmp_16 * m02 + tmp_21 * m12) -
+           (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02)),
+    ];
+  },
+
+  cross: function(a, b) {
+    return [
+       a[1] * b[2] - a[2] * b[1],
+       a[2] * b[0] - a[0] * b[2],
+       a[0] * b[1] - a[1] * b[0],
+    ];
+  },
+
+  subtractVectors: function(a, b) {
+    return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  },
+
+  normalize: function(v) {
+    var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    // make sure we don't divide by 0.
+    if (length > 0.00001) {
+      return [v[0] / length, v[1] / length, v[2] / length];
+    } else {
+      return [0, 0, 0];
     }
+  },
+
+  lookAt: function(cameraPosition, target, up) {
+    var zAxis = m4.normalize(
+        m4.subtractVectors(cameraPosition, target));
+    var xAxis = m4.normalize(m4.cross(up, zAxis));
+    var yAxis = m4.normalize(m4.cross(zAxis, xAxis));
+
+    return [
+      xAxis[0], xAxis[1], xAxis[2], 0,
+      yAxis[0], yAxis[1], yAxis[2], 0,
+      zAxis[0], zAxis[1], zAxis[2], 0,
+      cameraPosition[0],
+      cameraPosition[1],
+      cameraPosition[2],
+      1,
+    ];
+  },
+
+  transformVector: function(m, v) {
+    var dst = [];
+    for (var i = 0; i < 4; ++i) {
+      dst[i] = 0.0;
+      for (var j = 0; j < 4; ++j) {
+        dst[i] += v[j] * m[j * 4 + i];
+      }
+    }
+    return dst;
+  },
+
+};
 
 main();
