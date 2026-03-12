@@ -1,8 +1,8 @@
 export var m4 = {
 
   perspective: function(fieldOfViewInRadians, aspect, near, far) {
-    var verticalFovScale = Math.tan(Math.PI * 0.5 - fieldOfViewInRadians/2);
-    var rangeInv =  1/(near - far);
+    let verticalFovScale = Math.tan(Math.PI * 0.5 - fieldOfViewInRadians/2);
+    let rangeInv =  1/(near - far);
     console.log(verticalFovScale);
 
     return [
@@ -98,8 +98,8 @@ export var m4 = {
   },
 
   yRotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
+    let c = Math.cos(angleInRadians);
+    let s = Math.sin(angleInRadians);
 
     return [
       c, 0, -s, 0,
@@ -110,8 +110,8 @@ export var m4 = {
   },
 
   zRotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
+    let c = Math.cos(angleInRadians);
+    let s = Math.sin(angleInRadians);
 
     return [
        c, s, 0, 0,
@@ -151,24 +151,24 @@ export var m4 = {
   },
 
   inverse: function(m) {
-    var m00 = m[0 * 4 + 0];
-    var m01 = m[0 * 4 + 1];
-    var m02 = m[0 * 4 + 2];
-    var m03 = m[0 * 4 + 3];
-    var m10 = m[1 * 4 + 0];
-    var m11 = m[1 * 4 + 1];
-    var m12 = m[1 * 4 + 2];
-    var m13 = m[1 * 4 + 3];
-    var m20 = m[2 * 4 + 0];
-    var m21 = m[2 * 4 + 1];
-    var m22 = m[2 * 4 + 2];
-    var m23 = m[2 * 4 + 3];
-    var m30 = m[3 * 4 + 0];
-    var m31 = m[3 * 4 + 1];
-    var m32 = m[3 * 4 + 2];
-    var m33 = m[3 * 4 + 3];
-    var tmp_0  = m22 * m33;
-    var tmp_1  = m32 * m23;
+    let m00 = m[0 * 4 + 0];
+    let m01 = m[0 * 4 + 1];
+    let m02 = m[0 * 4 + 2];
+    let m03 = m[0 * 4 + 3];
+    let m10 = m[1 * 4 + 0];
+    let m11 = m[1 * 4 + 1];
+    let m12 = m[1 * 4 + 2];
+    let m13 = m[1 * 4 + 3];
+    let m20 = m[2 * 4 + 0];
+    let m21 = m[2 * 4 + 1];
+    let m22 = m[2 * 4 + 2];
+    let m23 = m[2 * 4 + 3];
+    let m30 = m[3 * 4 + 0];
+    let m31 = m[3 * 4 + 1];
+    let m32 = m[3 * 4 + 2];
+    let m33 = m[3 * 4 + 3];
+    let tmp_0  = m22 * m33;
+    let tmp_1  = m32 * m23;
     var tmp_2  = m12 * m33;
     var tmp_3  = m32 * m13;
     var tmp_4  = m12 * m23;
@@ -248,7 +248,7 @@ export var m4 = {
   },
 
   normalize: function(v) {
-    var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    let length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     // make sure we don't divide by 0.
     if (length > 0.00001) {
       return [v[0] / length, v[1] / length, v[2] / length];
@@ -258,10 +258,10 @@ export var m4 = {
   },
 
   lookAt: function(cameraPosition, target, up) {
-    var zAxis = m4.normalize(
+    let zAxis = m4.normalize(
         m4.subtractVectors(cameraPosition, target));
-    var xAxis = m4.normalize(m4.cross(up, zAxis));
-    var yAxis = m4.normalize(m4.cross(zAxis, xAxis));
+    let xAxis = m4.normalize(m4.cross(up, zAxis));
+    let yAxis = m4.normalize(m4.cross(zAxis, xAxis));
 
     return [
       xAxis[0], xAxis[1], xAxis[2], 0,
@@ -275,7 +275,7 @@ export var m4 = {
   },
 
   transformVector: function(m, v) {
-    var dst = [];
+    let dst = [];
     for (var i = 0; i < 4; ++i) {
       dst[i] = 0.0;
       for (var j = 0; j < 4; ++j) {

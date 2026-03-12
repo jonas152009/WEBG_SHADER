@@ -18,11 +18,11 @@ setColors(gl,colorBuffer);
 
 const positionBuffer_Ground= gl.createBuffer();
 setGeometry_Ground(gl,positionBuffer_Ground);
-var radiant = 0;
-var angle = 0;
-var x=0;
-var tx = 0;
-var tz = 0;
+let radiant = 0;
+let angle = 0;
+let x=0;
+let tx = 0;
+let tz = 0;
 
 window.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") {

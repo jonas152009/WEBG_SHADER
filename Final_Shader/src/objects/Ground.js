@@ -1,5 +1,6 @@
 import { m4 } from '../math/matrix.js';
-
+let Ground = {
+};
 export function drawGround(gl,program,positionBuffer,colorBuffer,viewProj){
     const positionLocation=gl.getAttribLocation(program,"a_position");
     const colorLocation=gl.getAttribLocation(program,"a_color");
@@ -16,7 +17,7 @@ export function drawGround(gl,program,positionBuffer,colorBuffer,viewProj){
 
     gl.bindVertexArray(vao);
 
-        var matrix=m4.translate(viewProj,300,-1,-220);
+        let matrix=m4.translate(viewProj,300,-1,-220);
           matrix = m4.zRotate(matrix,3.15);
           matrix = m4.scale(matrix,500,0,500);
         gl.uniformMatrix4fv(matrixLocation,false,matrix);

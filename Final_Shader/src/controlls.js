@@ -1,6 +1,6 @@
 export function controlls(width,old_x,old_z){
-    var x = old_x;
-    var z = old_z;
+    let x = old_x;
+    let z = old_z;
 window.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") {
     
